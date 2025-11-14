@@ -55,10 +55,20 @@ const secondaryItems: NavItem[] = [
 export default function HospitalSidebar({ open }: HospitalSidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { can } = usePermission();
 
   const isActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
+
+  // Filter items based on permissions
+  const visibleNavItems = navItems.filter(
+    (item) => !item.requiredPermission || can(item.requiredPermission)
+  );
+
+  const visibleSecondaryItems = secondaryItems.filter(
+    (item) => !item.requiredPermission || can(item.requiredPermission)
+  );
 
   const drawerContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -81,7 +91,7 @@ export default function HospitalSidebar({ open }: HospitalSidebarProps) {
 
       {/* Navigation Items */}
       <List sx={{ flex: 1, pt: 2 }}>
-        {navItems.map((item) => (
+        {visibleNavItems.map((item) => (
           <ListItemButton
             key={item.path}
             onClick={() => navigate(item.path)}
@@ -121,7 +131,7 @@ export default function HospitalSidebar({ open }: HospitalSidebarProps) {
       <Box>
         <Divider sx={{ my: 1 }} />
         <List>
-          {secondaryItems.map((item) => (
+          {visibleSecondaryItems.map((item) => (
             <ListItemButton
               key={item.path}
               onClick={() => navigate(item.path)}
