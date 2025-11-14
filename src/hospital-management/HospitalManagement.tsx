@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import HospitalSidebar from './layout/HospitalSidebar';
 import HospitalHeader from './layout/HospitalHeader';
 import HospitalDashboard from './pages/Dashboard';
@@ -14,33 +16,20 @@ import UserProfile from './pages/UserProfile';
 import HelpSupport from './pages/HelpSupport';
 import Login from './pages/Login';
 
-export default function HospitalManagement() {
+function HospitalManagementLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const savedAuth = localStorage.getItem('hospital_auth');
-    if (savedAuth) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const handleLoginSuccess = () => {
-    localStorage.setItem('hospital_auth', 'true');
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('hospital_auth');
-    setIsAuthenticated(false);
-  };
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSidebarToggle = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
+    return <Login onLoginSuccess={() => {}} />;
   }
 
   return (
@@ -66,17 +55,67 @@ export default function HospitalManagement() {
         >
           <Routes>
             <Route path="/" element={<HospitalDashboard />} />
-            <Route path="/patients/*" element={<PatientManagement />} />
-            <Route path="/appointments/*" element={<AppointmentScheduling />} />
-            <Route path="/ehr/*" element={<ElectronicHealthRecords />} />
-            <Route path="/billing/*" element={<BillingInvoicing />} />
-            <Route path="/inventory/*" element={<InventoryManagement />} />
-            <Route path="/settings/*" element={<HospitalSettings />} />
+            <Route
+              path="/patients/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_patients']}>
+                  <PatientManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/appointments/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_appointments']}>
+                  <AppointmentScheduling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ehr/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_ehr']}>
+                  <ElectronicHealthRecords />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billing/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_billing']}>
+                  <BillingInvoicing />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_inventory']}>
+                  <InventoryManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/*"
+              element={
+                <ProtectedRoute requiredPermissions={['view_system_settings']}>
+                  <HospitalSettings />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/help" element={<HelpSupport />} />
           </Routes>
         </Container>
       </Box>
     </Box>
+  );
+}
+
+export default function HospitalManagement() {
+  return (
+    <AuthProvider>
+      <HospitalManagementLayout />
+    </AuthProvider>
   );
 }

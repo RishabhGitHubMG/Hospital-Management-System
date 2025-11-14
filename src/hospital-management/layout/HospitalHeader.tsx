@@ -14,6 +14,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useAuth } from '../context/AuthContext';
+import { roleDisplayNames } from '../utils/rolePermissions';
 
 interface HospitalHeaderProps {
   onMenuClick: () => void;
@@ -27,6 +29,7 @@ export default function HospitalHeader({
   onLogout,
 }: HospitalHeaderProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [notifAnchorEl, setNotifAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -112,7 +115,7 @@ export default function HospitalHeader({
                 cursor: 'pointer',
               }}
             >
-              DR
+              {user?.name?.substring(0, 2).toUpperCase() || 'U'}
             </Avatar>
           </IconButton>
 
@@ -125,12 +128,12 @@ export default function HospitalHeader({
           >
             <MenuItem disabled>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                Dr. Sarah Johnson
+                {user?.name}
               </Typography>
             </MenuItem>
             <MenuItem disabled>
               <Typography variant="caption" color="textSecondary">
-                Hospital Administrator
+                {user?.role ? roleDisplayNames[user.role] : 'User'}
               </Typography>
             </MenuItem>
             <MenuItem onClick={() => {
