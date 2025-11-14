@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import HospitalSidebar from './layout/HospitalSidebar';
@@ -10,13 +10,37 @@ import ElectronicHealthRecords from './modules/ElectronicHealthRecords';
 import BillingInvoicing from './modules/BillingInvoicing';
 import InventoryManagement from './modules/InventoryManagement';
 import HospitalSettings from './pages/Settings';
+import UserProfile from './pages/UserProfile';
+import Login from './pages/Login';
 
 export default function HospitalManagement() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('hospital_auth');
+    if (savedAuth) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLoginSuccess = () => {
+    localStorage.setItem('hospital_auth', 'true');
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('hospital_auth');
+    setIsAuthenticated(false);
+  };
 
   const handleSidebarToggle = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
@@ -30,7 +54,7 @@ export default function HospitalManagement() {
           transition: 'margin-left 0.3s ease',
         }}
       >
-        <HospitalHeader onMenuClick={handleSidebarToggle} sidebarOpen={sidebarOpen} />
+        <HospitalHeader onMenuClick={handleSidebarToggle} sidebarOpen={sidebarOpen} onLogout={handleLogout} />
         <Container
           maxWidth="lg"
           sx={{
@@ -47,6 +71,7 @@ export default function HospitalManagement() {
             <Route path="/billing/*" element={<BillingInvoicing />} />
             <Route path="/inventory/*" element={<InventoryManagement />} />
             <Route path="/settings/*" element={<HospitalSettings />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </Container>
       </Box>
