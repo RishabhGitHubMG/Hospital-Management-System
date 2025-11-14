@@ -115,7 +115,7 @@ export default function HospitalHeader({
                 cursor: 'pointer',
               }}
             >
-              DR
+              {user?.name?.substring(0, 2).toUpperCase() || 'U'}
             </Avatar>
           </IconButton>
 
@@ -128,12 +128,12 @@ export default function HospitalHeader({
           >
             <MenuItem disabled>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                Dr. Sarah Johnson
+                {user?.name}
               </Typography>
             </MenuItem>
             <MenuItem disabled>
               <Typography variant="caption" color="textSecondary">
-                Hospital Administrator
+                {user?.role ? roleDisplayNames[user.role] : 'User'}
               </Typography>
             </MenuItem>
             <MenuItem onClick={() => {
