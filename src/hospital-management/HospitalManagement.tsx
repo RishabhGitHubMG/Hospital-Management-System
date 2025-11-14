@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import HospitalSidebar from './layout/HospitalSidebar';
 import HospitalHeader from './layout/HospitalHeader';
@@ -15,8 +15,10 @@ import HelpSupport from './pages/HelpSupport';
 import Login from './pages/Login';
 
 export default function HospitalManagement() {
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isLoginPage = location.pathname === '/login';
 
   useEffect(() => {
     const savedAuth = localStorage.getItem('hospital_auth');
@@ -39,6 +41,12 @@ export default function HospitalManagement() {
     setSidebarOpen(!sidebarOpen);
   };
 
+  // Show login page if on login route
+  if (isLoginPage) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  // Show login page if not authenticated and trying to access protected routes
   if (!isAuthenticated) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
@@ -66,6 +74,7 @@ export default function HospitalManagement() {
         >
           <Routes>
             <Route path="/" element={<HospitalDashboard />} />
+            <Route path="/dashboard/*" element={<HospitalDashboard />} />
             <Route path="/patients/*" element={<PatientManagement />} />
             <Route path="/appointments/*" element={<AppointmentScheduling />} />
             <Route path="/ehr/*" element={<ElectronicHealthRecords />} />
