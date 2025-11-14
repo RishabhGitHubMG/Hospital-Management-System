@@ -14,6 +14,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useAuth } from '../context/AuthContext';
+import { roleDisplayNames } from '../utils/rolePermissions';
 
 interface HospitalHeaderProps {
   onMenuClick: () => void;
