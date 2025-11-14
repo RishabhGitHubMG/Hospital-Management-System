@@ -11,6 +11,7 @@ import BillingInvoicing from './modules/BillingInvoicing';
 import InventoryManagement from './modules/InventoryManagement';
 import HospitalSettings from './pages/Settings';
 import UserProfile from './pages/UserProfile';
+import HelpSupport from './pages/HelpSupport';
 import Login from './pages/Login';
 
 export default function HospitalManagement() {
@@ -72,6 +73,7 @@ export default function HospitalManagement() {
             <Route path="/inventory/*" element={<InventoryManagement />} />
             <Route path="/settings/*" element={<HospitalSettings />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/help" element={<HelpSupport />} />
           </Routes>
         </Container>
       </Box>
