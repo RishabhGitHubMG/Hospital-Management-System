@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -17,12 +18,15 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 interface HospitalHeaderProps {
   onMenuClick: () => void;
   sidebarOpen: boolean;
+  onLogout?: () => void;
 }
 
 export default function HospitalHeader({
   onMenuClick,
   sidebarOpen,
+  onLogout,
 }: HospitalHeaderProps) {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [notifAnchorEl, setNotifAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -129,9 +133,18 @@ export default function HospitalHeader({
                 Hospital Administrator
               </Typography>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={() => {
+              navigate('/profile');
+              handleMenuClose();
+            }}>Profile</MenuItem>
+            <MenuItem onClick={() => {
+              navigate('/settings');
+              handleMenuClose();
+            }}>Settings</MenuItem>
+            <MenuItem onClick={() => {
+              if (onLogout) onLogout();
+              handleMenuClose();
+            }}>Logout</MenuItem>
           </Menu>
 
           <IconButton color="inherit" onClick={handleMenuOpen}>
