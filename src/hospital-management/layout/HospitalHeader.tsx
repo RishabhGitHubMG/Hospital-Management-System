@@ -29,6 +29,7 @@ export default function HospitalHeader({
   onLogout,
 }: HospitalHeaderProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [notifAnchorEl, setNotifAnchorEl] = React.useState<null | HTMLElement>(null);
 
