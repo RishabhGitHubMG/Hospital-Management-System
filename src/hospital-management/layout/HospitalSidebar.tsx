@@ -19,6 +19,11 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import PaidIcon from '@mui/icons-material/Paid';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import { usePermission } from '../hooks/usePermission';
+import { Permission } from '../utils/rolePermissions';
 
 interface HospitalSidebarProps {
   open: boolean;
@@ -28,19 +33,22 @@ interface NavItem {
   label: string;
   icon: React.ReactNode;
   path: string;
+  requiredPermission?: Permission;
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { label: 'Patients', icon: <PeopleIcon />, path: '/patients' },
-  { label: 'Appointments', icon: <ScheduleIcon />, path: '/appointments' },
-  { label: 'Health Records', icon: <MedicalServicesIcon />, path: '/ehr' },
-  { label: 'Billing', icon: <ReceiptIcon />, path: '/billing' },
-  { label: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
+  { label: 'Dashboard', icon: <DashboardIcon />, path: '/', requiredPermission: 'view_dashboard' },
+  { label: 'Patients', icon: <PeopleIcon />, path: '/patients', requiredPermission: 'view_patients' },
+  { label: 'Appointments', icon: <ScheduleIcon />, path: '/appointments', requiredPermission: 'view_appointments' },
+  { label: 'Health Records', icon: <MedicalServicesIcon />, path: '/ehr', requiredPermission: 'view_ehr' },
+  { label: 'Lab Tests', icon: <AssignmentIcon />, path: '/lab', requiredPermission: 'view_lab_tests' },
+  { label: 'Pharmacy', icon: <LocalPharmacyIcon />, path: '/pharmacy', requiredPermission: 'view_pharmacy' },
+  { label: 'Billing', icon: <ReceiptIcon />, path: '/billing', requiredPermission: 'view_billing' },
+  { label: 'Inventory', icon: <InventoryIcon />, path: '/inventory', requiredPermission: 'view_inventory' },
 ];
 
 const secondaryItems: NavItem[] = [
-  { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+  { label: 'Settings', icon: <SettingsIcon />, path: '/settings', requiredPermission: 'view_system_settings' },
   { label: 'Help & Support', icon: <HelpIcon />, path: '/help' },
 ];
 
